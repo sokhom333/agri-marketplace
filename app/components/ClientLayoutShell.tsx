@@ -11,11 +11,11 @@ export default function ClientLayoutShell({ children }: { children: React.ReactN
     <>
       <div className="flex-1 pb-16 sm:pb-0">{children}</div>
 
-      {/* ប៊ូតុងអណ្តែត AI បង្ហាញទាំងលើទូរស័ព្ទដៃ និងកុំព្យូទ័រ */}
+      {/* ប៊ូតុងអណ្តែត AI សម្រាប់បើកផ្ទាំង Chat Gemini ផ្ទាល់ក្នុងវេបសាយ */}
       <button
         onClick={() => setIsChatOpen(true)}
         className="fixed bottom-16 sm:bottom-6 right-3 sm:right-6 z-40 flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all transform hover:-translate-y-1 font-bold text-xs sm:text-sm border-2 border-white/40 backdrop-blur-sm cursor-pointer"
-        title="ជជែកជាមួយ ដើមកសិកម្ម AI"
+        title="ជជែកជាមួយ ដើមកសិកម្ម AI (Gemini)"
       >
         <span className="text-base sm:text-xl animate-bounce">🤖</span>
         <span>ដើមកសិកម្ម AI</span>
@@ -47,14 +47,16 @@ export default function ClientLayoutShell({ children }: { children: React.ReactN
           <span>ទំនិញខ្ញុំ</span>
         </Link>
 
-        {/* ចុចលើនេះក៏បើក Chatbot Gemini បានដូចគ្នា */}
-        <button
-          onClick={() => setIsChatOpen(true)}
+        {/* ភ្ជាប់លីងទៅកាន់ Daem Vet AI Streamlit App វិញ */}
+        <a
+          href="https://daem-vet-ai.streamlit.app/"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex flex-col items-center gap-0.5 text-[11px] font-bold text-emerald-700 active:scale-95 transition cursor-pointer"
         >
           <span className="text-lg">🤖</span>
           <span>AI ពេទ្យសត្វ</span>
-        </button>
+        </a>
       </nav>
 
       {/* ផ្ទាំង Popup AI Gemini Chat */}
