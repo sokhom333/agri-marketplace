@@ -1,18 +1,14 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { ArrowLeft, PhoneCall, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-export default function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }> | { id: string };
-}) {
-  // ប្រើប្រាស់ React.use() របស់ React 19 ដើម្បី unwrap params នៅក្នុង Client Component ឱ្យស្របតាម Next.js 15
-  const resolvedParams = params instanceof Promise ? use(params) : params;
-  const id = resolvedParams?.id;
+export default function ProductDetailPage() {
+  const params = useParams();
+  const id = params?.id as string;
 
   const [product, setProduct] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
