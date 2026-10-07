@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, PhoneCall, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-export default function ProductDetailPage() {
+// បញ្ជាក់ឱ្យ Next.js ដឹងថាទំព័រនេះដំណើរការ Dynamic មិនបាច់ Prerender ពេល Build ឡើយ
+export const dynamic = 'force-dynamic';
+
+function ProductDetailContent() {
   const params = useParams();
   const id = params?.id as string;
 
@@ -205,5 +208,13 @@ export default function ProductDetailPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductDetailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-500">កំពុងដំណើរការ...</div>}>
+      <ProductDetailContent />
+    </Suspense>
   );
 }
