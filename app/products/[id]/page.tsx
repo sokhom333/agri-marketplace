@@ -3,7 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, PhoneCall, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check } from 'lucide-react';
+import { ArrowLeft, PhoneCall, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check, MessageSquare } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 function ProductDetailContent() {
@@ -42,6 +42,35 @@ function ProductDetailContent() {
     navigator.clipboard.writeText(phone);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleStartChat = async () => {
+    const userPhone = prompt('សូមបញ្ចូលលេខទូរស័ព្ទរបស់អ្នកដើម្បីឆាតជាមួយអ្នកលក់៖');
+    if (!userPhone) return;
+
+    let { data: convo } = await supabase
+      .from('conversations')
+      .select('id')
+      .eq('product_id', product.id)
+      .eq('buyer_phone', userPhone)
+      .single();
+
+    if (!convo) {
+      const { data: newConvo } = await supabase
+        .from('conversations')
+        .insert({
+          product_id: product.id,
+          buyer_phone: userPhone,
+          seller_phone: product.seller_phone,
+        })
+        .select()
+        .single();
+      convo = newConvo;
+    }
+
+    if (convo) {
+      window.location.href = `/chat/${convo.id}?phone=${userPhone}`;
+    }
   };
 
   if (loading) {
@@ -125,23 +154,33 @@ function ProductDetailContent() {
               </p>
             </div>
 
-            <div className="pt-2 flex flex-col sm:flex-row gap-2">
-              <a
-                href={`tel:${product.seller_phone}`}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-3 rounded-2xl transition shadow-sm flex items-center justify-center gap-2"
+            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                onClick={handleStartChat}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-3 px-4 rounded-2xl transition shadow-sm flex items-center justify-center gap-2"
               >
-                <PhoneCall size={16} />
-                <span>ខលទាក់ទងអ្នកលក់ ({product.seller_phone})</span>
-              </a>
+                <MessageSquare size={16} />
+                <span>ឆាតផ្ទាល់ក្នុងវេបសាយ</span>
+              </button>
+
               <a
                 href={formatTelegramLink(product.seller_phone)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-3 rounded-2xl transition shadow-sm flex items-center justify-center gap-2"
+                className="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-3 rounded-2xl transition shadow-sm flex items-center justify-center gap-2"
               >
                 <Send size={16} />
                 <span>ផ្ញើសារតាមតេឡេក្រាម</span>
               </a>
+
+              <a
+                href={`tel:${product.seller_phone}`}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-3 rounded-2xl transition shadow-sm flex items-center justify-center gap-2"
+              >
+                <PhoneCall size={16} />
+                <span>ខល ({product.seller_phone})</span>
+              </a>
+
               <button
                 onClick={() => setShowQR(true)}
                 className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-sm font-bold py-3 px-4 rounded-2xl transition flex items-center justify-center gap-2"
