@@ -44,15 +44,15 @@ export default function RootLayout({
         {/* ខ្លឹមសារទំព័រនានា */}
         <div className="flex-1 pb-16 sm:pb-0">{children}</div>
 
-        {/* ប៊ូតុងអណ្តែត AI (លើទូរស័ព្ទរុញឡើងលើ bottom-16 ដើម្បីកុំឱ្យបាំង navigation) */}
+        {/* ប៊ូតុងអណ្តែត AI បង្ហាញតែលើកុំព្យូទ័រ (hidden sm:flex) ដើម្បីកុំឱ្យបាំងលើទូរស័ព្ទ */}
         <a
           href="https://daem-vet-ai.streamlit.app/"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 font-semibold text-xs sm:text-sm border-2 border-white/30 backdrop-blur-sm"
+          className="hidden sm:flex fixed bottom-6 right-6 z-50 items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 py-3 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 font-semibold text-sm border-2 border-white/30 backdrop-blur-sm"
           title="ពិគ្រោះជំងឺសត្វ និងដំណាំជាមួយ ដើមកសិកម្ម AI"
         >
-          <span className="text-base sm:text-xl animate-bounce">🤖</span>
+          <span className="text-xl animate-bounce">🤖</span>
           <span>ដើមកសិកម្ម AI</span>
         </a>
 
