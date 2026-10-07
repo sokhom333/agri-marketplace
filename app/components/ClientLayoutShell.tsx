@@ -11,13 +11,13 @@ export default function ClientLayoutShell({ children }: { children: React.ReactN
     <>
       <div className="flex-1 pb-16 sm:pb-0">{children}</div>
 
-      {/* ប៊ូតុងអណ្តែត AI លើ Desktop */}
+      {/* ប៊ូតុងអណ្តែត AI បង្ហាញទាំងលើទូរស័ព្ទដៃ និងកុំព្យូទ័រ */}
       <button
         onClick={() => setIsChatOpen(true)}
-        className="hidden sm:flex fixed bottom-6 right-6 z-40 items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 py-3 rounded-full shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 font-semibold text-sm border-2 border-white/30 backdrop-blur-sm cursor-pointer"
+        className="fixed bottom-16 sm:bottom-6 right-3 sm:right-6 z-40 flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all transform hover:-translate-y-1 font-bold text-xs sm:text-sm border-2 border-white/40 backdrop-blur-sm cursor-pointer"
         title="ជជែកជាមួយ ដើមកសិកម្ម AI"
       >
-        <span className="text-xl animate-bounce">🤖</span>
+        <span className="text-base sm:text-xl animate-bounce">🤖</span>
         <span>ដើមកសិកម្ម AI</span>
       </button>
 
@@ -47,7 +47,7 @@ export default function ClientLayoutShell({ children }: { children: React.ReactN
           <span>ទំនិញខ្ញុំ</span>
         </Link>
 
-        {/* ចុចលើនេះដើម្បីបើក Chatbot Gemini លើទូរស័ព្ទ */}
+        {/* ចុចលើនេះក៏បើក Chatbot Gemini បានដូចគ្នា */}
         <button
           onClick={() => setIsChatOpen(true)}
           className="flex flex-col items-center gap-0.5 text-[11px] font-bold text-emerald-700 active:scale-95 transition cursor-pointer"
