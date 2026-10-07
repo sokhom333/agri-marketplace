@@ -6,9 +6,6 @@ import { useParams } from 'next/navigation';
 import { ArrowLeft, PhoneCall, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-// បញ្ជាក់ឱ្យ Next.js ដឹងថាទំព័រនេះដំណើរការ Dynamic មិនបាច់ Prerender ពេល Build ឡើយ
-export const dynamic = 'force-dynamic';
-
 function ProductDetailContent() {
   const params = useParams();
   const id = params?.id as string;
