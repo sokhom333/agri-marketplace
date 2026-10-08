@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, EyeOff, Trash2, MapPin, RefreshCw, Lock, KeyRound, Plus, X, UploadCloud, ImagePlus, QrCode } from 'lucide-react';
+import { ArrowLeft, CheckCircle, EyeOff, Trash2, MapPin, RefreshCw, Lock, KeyRound, Plus, X, UploadCloud, ImagePlus, QrCode, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const ADMIN_SECRET_PIN = '271993'; 
@@ -34,8 +34,8 @@ export default function AdminPage() {
     category: 'ថ្នាំសត្វ & វ៉ាក់សាំង',
     price: '',
     unit: 'ដប',
-    seller_name: 'ដេប៉ូ ដើមកសិកម្ម', // កំណត់ឈ្មោះដេប៉ូជាលំនាំដើម
-    seller_phone: '012 345 678',   // លេខទូរស័ព្ទដេប៉ូ
+    seller_name: 'ដេប៉ូ ដើមកសិកម្ម',
+    seller_phone: '012 345 678',
     location: 'សៀមរាប',
     description: '',
   });
@@ -91,9 +91,6 @@ export default function AdminPage() {
     else setProducts(products.filter((p) => p.id !== id));
   };
 
-  // -----------------------------------------------------
-  // មុខងារសម្រាប់ផុសទំនិញថ្មីពី Admin
-  // -----------------------------------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -159,8 +156,8 @@ export default function AdminPage() {
           image_url: finalImageUrl,
           qr_code_url: finalQrUrl || null,
           description: formData.description,
-          is_approved: true, // ផុសពី Admin គឺ Approve អូតូ
-          edit_pin: 'admin', // មិនបាច់ប្រើ PIN ក៏បានព្រោះ Admin អាចលុបបានស្រាប់
+          is_approved: true,
+          edit_pin: 'admin',
         },
       ]);
 
@@ -169,9 +166,8 @@ export default function AdminPage() {
       } else {
         alert('បង្ហោះទំនិញដេប៉ូជោគជ័យ!');
         setShowAddModal(false);
-        fetchProducts(); // ទាញយកទិន្នន័យថ្មីមកបង្ហាញ
+        fetchProducts();
         
-        // Clear form
         setFormData({ ...formData, title: '', price: '', description: '' });
         setImageFile(null); setImagePreview('');
         setQrFile(null); setQrPreview('');
@@ -183,8 +179,6 @@ export default function AdminPage() {
       setFormLoading(false);
     }
   };
-
-  // -----------------------------------------------------
 
   if (!isAuthenticated) {
     return (
@@ -224,7 +218,6 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* ប៊ូតុងបន្ថែមទំនិញដេប៉ូ */}
             <button
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition shadow-sm"
@@ -286,6 +279,14 @@ export default function AdminPage() {
                         </td>
                         <td className="py-3 px-4 text-center">
                           <div className="flex items-center justify-center gap-1.5">
+                            {/* ប៊ូតុង កែប្រែ ព័ត៌មាន និង QR Code */}
+                            <Link
+                              href={`/my-products/edit/${p.id}`}
+                              className="p-1.5 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-700 transition"
+                              title="កែសម្រួលព័ត៌មាន និង QR Code"
+                            >
+                              <Pencil size={14} />
+                            </Link>
                             <button onClick={() => toggleApprove(p.id, p.is_approved)} className={`p-1.5 rounded-lg border transition ${p.is_approved ? 'border-amber-200 text-amber-600 hover:bg-amber-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`} title={p.is_approved ? 'លាក់ពីទំព័រដើម' : 'អនុម័តឱ្យបង្ហាញ'}>{p.is_approved ? <EyeOff size={14} /> : <CheckCircle size={14} />}</button>
                             <button onClick={() => deleteProduct(p.id)} className="p-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition" title="លុបទំនិញនេះចោល"><Trash2 size={14} /></button>
                           </div>
@@ -338,7 +339,7 @@ export default function AdminPage() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ប្រភេទ *</label>
                   <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600 bg-white">
-                    <option value="ថ្នាំសត្វ">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
+                    <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
                     <option value="ចំណីសត្វ">ចំណីសត្វ</option>
                     <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
                     <option value="កសិផលស្រស់">កសិផលស្រស់</option>
