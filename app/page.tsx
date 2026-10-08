@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShieldCheck, PlusCircle, PhoneCall, Send, MapPin, Shield, QrCode, X, Copy, Check, PackageCheck } from 'lucide-react';
+import { Search, ShieldCheck, PlusCircle, MapPin, Shield, QrCode, X, Copy, Check, PackageCheck } from 'lucide-react';
 import { supabase } from './lib/supabase';
+import ProductContactActions from './components/ProductContactActions';
 
 export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -29,12 +30,6 @@ export default function HomePage() {
     }
     loadData();
   }, []);
-
-  const formatTelegramLink = (phone: string) => {
-    if (!phone) return '#';
-    const formattedPhone = phone.startsWith('0') ? '855' + phone.slice(1) : phone;
-    return `https://t.me/+${formattedPhone}`;
-  };
 
   const filteredProducts = products.filter((p) => {
     const matchesCategory =
@@ -74,7 +69,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Search Bar នៅលើ Desktop ដាក់នៅ Header តែម្ដងដើម្បីសន្សំទំហំ */}
+          {/* Search Bar នៅលើ Desktop */}
           <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
             <input
               type="text"
@@ -114,7 +109,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Search Bar បង្ហាញលើតែទូរស័ព្ទ */}
+        {/* Search Bar នៅលើទូរស័ព្ទដៃ */}
         <div className="md:hidden max-w-7xl mx-auto px-4 pb-2.5">
           <div className="relative">
             <input
@@ -163,7 +158,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Products Grid (២ ជួរលើទូរស័ព្ទ, ៣ ជួរលើ Tablet, ៤-៥ ជួរលើកុំព្យូទ័រ) */}
+        {/* Products Grid */}
         <section>
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-sm sm:text-base font-bold text-slate-800 flex items-center gap-2">
@@ -181,7 +176,7 @@ export default function HomePage() {
                     key={p.id}
                     className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group"
                   >
-                    {/* រូបភាពកាត់សមាមាត្រការ៉េស្មើ (Aspect Square) សមសួនទាំងទូរស័ព្ទ និងកុំព្យូទ័រ */}
+                    {/* រូបភាពកាត់សមាមាត្រការ៉េស្មើ */}
                     <Link href={`/products/${p.id}`} className="relative w-full aspect-square bg-slate-100 shrink-0 block overflow-hidden">
                       <img
                         src={p.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
@@ -215,8 +210,8 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* តម្លៃ និងប៊ូតុង */}
-                      <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+                      {/* តម្លៃ និងប៊ូតុងទំនាក់ទំនង */}
+                      <div className="pt-2 border-t border-slate-100 flex flex-col gap-1.5">
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="text-[9px] text-slate-400">តម្លៃ</span>
@@ -227,7 +222,7 @@ export default function HomePage() {
                           </div>
                           <button
                             onClick={() => setSelectedProductForQR(p)}
-                            className="px-2 py-1 rounded-lg border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition flex items-center gap-1 text-[10px] font-bold"
+                            className="px-2 py-1 rounded-lg border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition flex items-center gap-1 text-[10px] font-bold cursor-pointer"
                             title="ស្កេនទូទាត់ KHQR"
                           >
                             <QrCode size={13} />
@@ -235,24 +230,8 @@ export default function HomePage() {
                           </button>
                         </div>
 
-                        <div className="flex gap-1.5">
-                          <a
-                            href={`tel:${p.seller_phone}`}
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold py-1.5 rounded-xl transition shadow-sm flex items-center justify-center gap-1"
-                          >
-                            <PhoneCall size={12} />
-                            <span>ខល</span>
-                          </a>
-                          <a
-                            href={formatTelegramLink(p.seller_phone)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-[11px] font-bold py-1.5 rounded-xl transition shadow-sm flex items-center justify-center gap-1"
-                          >
-                            <Send size={12} />
-                            <span>Telegram</span>
-                          </a>
-                        </div>
+                        {/* ប៊ូតុង ខល (រើសខ្សែ) និង Telegram */}
+                        <ProductContactActions sellerPhone={p.seller_phone} />
                       </div>
                     </div>
                   </div>
@@ -273,7 +252,7 @@ export default function HomePage() {
           <div className="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 relative shadow-2xl text-center">
             <button
               onClick={() => setSelectedProductForQR(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition"
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition cursor-pointer"
             >
               <X size={18} />
             </button>
@@ -310,7 +289,7 @@ export default function HomePage() {
                   <span>{selectedProductForQR.seller_phone}</span>
                   <button
                     onClick={() => handleCopyPhone(selectedProductForQR.seller_phone)}
-                    className="p-1 hover:bg-slate-200 rounded text-slate-500 transition"
+                    className="p-1 hover:bg-slate-200 rounded text-slate-500 transition cursor-pointer"
                   >
                     {copied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                   </button>
