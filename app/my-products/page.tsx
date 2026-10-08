@@ -11,7 +11,7 @@ export default function MyProductsPage() {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // មុខងារស្វែងរកទំនិញតាមលេខទូរស័ព្ទអ្នកលក់
+  // មុខងារស្វែងរកទំនិញតាមលេខទូរស័ព្ទ (ដកដកឃ្លា និងសញ្ញាចោលទាំងអស់)
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!phoneInput.trim()) return;
@@ -19,10 +19,14 @@ export default function MyProductsPage() {
     setLoading(true);
     setSearched(true);
 
+    // សម្អាតលេខទូរស័ព្ទដែលអ្នកប្រើប្រាស់វាយបញ្ចូល (ដកដកឃ្លា និងសញ្ញា - ចោល)
+    const cleanedInput = phoneInput.replace(/[\s-]/g, '');
+
+    // ស្វែងរកទាំងលេខដែលមានដកឃ្លា និងលេខដែលគ្មានដកឃ្លា
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .eq('seller_phone', phoneInput.trim())
+      .or(`seller_phone.ilike.%${cleanedInput}%,seller_phone.eq.${phoneInput.trim()}`)
       .order('created_at', { ascending: false });
 
     if (data) setProducts(data);
@@ -72,7 +76,7 @@ export default function MyProductsPage() {
                 <input
                   type="tel"
                   required
-                  placeholder="ឧ. 012 345 678"
+                  placeholder="ឧ. 012 345 678 ឬ 0979233833"
                   value={phoneInput}
                   onChange={(e) => setPhoneInput(e.target.value)}
                   className="w-full bg-slate-50 pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600"
@@ -82,14 +86,14 @@ export default function MyProductsPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 disabled:opacity-50"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
               >
                 <Search size={15} />
                 <span>{loading ? 'កំពុងស្វែងរក...' : 'ស្វែងរក'}</span>
               </button>
             </div>
             <p className="text-[11px] text-slate-400">
-              * ប្រព័ន្ធនឹងបង្ហាញតែទំនិញដែលត្រូវគ្នានឹងលេខទូរស័ព្ទនេះប៉ុណ្ណោះ។
+              * ប្រព័ន្ធនឹងបង្ហាញទំនិញដែលត្រូវគ្នានឹងលេខទូរស័ព្ទនេះ (ទាំងលេខកសិករ និងដេប៉ូ)។
             </p>
           </form>
         </div>
@@ -136,7 +140,7 @@ export default function MyProductsPage() {
                             {priceInRiel} ៛ <span className="text-[10px] text-slate-400 font-normal">/{p.unit}</span>
                           </p>
                           <span className="inline-block text-[10px] text-slate-400 mt-0.5">
-                            ប្រភេទ៖ {p.category}
+                            ប្រភេទ៖ {p.category} | លេខ៖ {p.seller_phone}
                           </span>
                         </div>
                       </div>
@@ -154,7 +158,7 @@ export default function MyProductsPage() {
 
                         <button
                           onClick={() => handleDelete(p.id, p.title)}
-                          className="px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center gap-1 text-xs font-semibold"
+                          className="px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center gap-1 text-xs font-semibold cursor-pointer"
                           title="លុបទំនិញនេះ"
                         >
                           <Trash2 size={14} />
