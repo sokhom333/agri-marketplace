@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
-export const dynamic = 'force-dynamic';
-
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY មិនទាន់ត្រូវបានកំណត់ឡើយ' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'GEMINI_API_KEY មិនទាន់ត្រូវបានកំណត់ឡើយ' },
+        { status: 500 }
+      );
     }
 
     const ai = new GoogleGenAI({ apiKey });
