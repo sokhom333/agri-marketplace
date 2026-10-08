@@ -135,7 +135,7 @@ export default function SellPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-12">
-      {/* Header រៀបចំមានទាំងប៊ូតុងថយក្រោយ និង Logo ស្អាតសមរម្យ */}
+      {/* Header */}
       <header className="bg-emerald-700 text-white shadow-md">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link href="/" className="p-1.5 hover:bg-emerald-800 rounded-lg transition" title="ត្រឡប់ទៅទំព័រដើម">
@@ -241,9 +241,24 @@ export default function SellPage() {
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ឈ្មោះម្ចាស់ចម្ការ / អ្នកលក់ *</label>
                   <input type="text" name="seller_name" required placeholder="ឧ. កសិដ្ឋាន ពូ ហេង" value={formData.seller_name} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600" />
                 </div>
+
+                {/* ប្រអប់បញ្ចូលលេខទូរស័ព្ទរហូតដល់ ៣ ខ្សែ */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">លេខទូរស័ព្ទទំនាក់ទំនង *</label>
-                  <input type="tel" name="seller_phone" required placeholder="ឧ. 012 345 678" value={formData.seller_phone} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600" />
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    លេខទូរស័ព្ទទំនាក់ទំនង (អាចដាក់បានរហូតដល់ ៣ ខ្សែ) *
+                  </label>
+                  <input
+                    type="text"
+                    name="seller_phone"
+                    required
+                    value={formData.seller_phone}
+                    onChange={handleChange}
+                    placeholder="ឧ. 012 345 678 / 097 923 3833 / 088 111 222"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-emerald-600 bg-white"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">
+                    * អាចប្រើសញ្ញា / ឬក្បៀស (,) ដើម្បីបំបែកលេខខ្សែនីមួយៗ
+                  </span>
                 </div>
               </div>
 
