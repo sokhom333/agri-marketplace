@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Trash2, Phone, Search, Package, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Trash2, Phone, Search, Package, AlertCircle, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export default function MyProductsPage() {
@@ -55,7 +55,7 @@ export default function MyProductsPage() {
           </Link>
           <div>
             <h1 className="text-base font-bold">គ្រប់គ្រងទំនិញរបស់ខ្ញុំ</h1>
-            <p className="text-[11px] text-emerald-100">ស្វែងរក និងលុបទំនិញដែលអ្នកបានបង្ហោះលក់</p>
+            <p className="text-[11px] text-emerald-100">ស្វែងរក កែសម្រួល និងលុបទំនិញដែលអ្នកបានបង្ហោះ</p>
           </div>
         </div>
       </header>
@@ -141,14 +141,26 @@ export default function MyProductsPage() {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => handleDelete(p.id, p.title)}
-                        className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 transition shrink-0 flex items-center gap-1 text-xs font-semibold"
-                        title="លុបទំនិញនេះ"
-                      >
-                        <Trash2 size={15} />
-                        <span className="hidden sm:inline">លុប</span>
-                      </button>
+                      {/* ប៊ូតុង កែប្រែ និង លុប */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link
+                          href={`/my-products/edit/${p.id}`}
+                          className="px-2.5 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-700 transition flex items-center gap-1 text-xs font-semibold"
+                          title="កែសម្រួលទំនិញនេះ"
+                        >
+                          <Pencil size={14} />
+                          <span className="hidden sm:inline">កែប្រែ</span>
+                        </Link>
+
+                        <button
+                          onClick={() => handleDelete(p.id, p.title)}
+                          className="px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center gap-1 text-xs font-semibold"
+                          title="លុបទំនិញនេះ"
+                        >
+                          <Trash2 size={14} />
+                          <span className="hidden sm:inline">លុប</span>
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
