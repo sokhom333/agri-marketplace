@@ -339,11 +339,13 @@ export default function AdminPage() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ប្រភេទ *</label>
                   <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600 bg-white">
-                    <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
-                    <option value="ចំណីសត្វ">ចំណីសត្វ</option>
-                    <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
-                    <option value="កសិផលស្រស់">កសិផលស្រស់</option>
-                  </select>
+  <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
+  <option value="ចំណីសត្វ">ចំណីសត្វ</option>
+  <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
+  <option value="កសិផលស្រស់">កសិផលស្រស់</option>
+  {/* ថែមប្រភេទថ្មីនៅទីនេះ */}
+  <option value="សម្ភារៈកសិកម្ម">សម្ភារៈកសិកម្ម</option>
+</select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ទីតាំង *</label>
