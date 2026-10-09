@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, ShieldCheck, PlusCircle, MapPin, Shield, QrCode, X, Copy, Check, PackageCheck } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import ProductContactActions from './components/ProductContactActions';
+import PchumBenBanner from './components/PchumBenBanner';
 
 export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -54,6 +55,9 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-800 pb-20 sm:pb-12">
+      {/* ផ្ទាំងអបអរពិធីបុណ្យភ្ជុំបិណ្ឌបណ្ដោះអាសន្ន */}
+      <PchumBenBanner />
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-emerald-700 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-4">
