@@ -19,7 +19,15 @@ export default function HomePage() {
   useEffect(() => {
     async function loadData() {
       const { data: catData } = await supabase.from('categories').select('*');
-      if (catData) setCategories(catData);
+      if (catData) {
+        // បើក្នុង Database មិនទាន់មាន "សម្ភារៈកសិកម្ម" វានឹងបន្ថែមបង្ហាញស្វ័យប្រវត្តិ
+        const hasEquipment = catData.some((c: any) => c.name.includes('សម្ភារៈកសិកម្ម'));
+        if (!hasEquipment) {
+          setCategories([...catData, { id: 'cat_equipment', name: 'សម្ភារៈកសិកម្ម', icon: '🚜' }]);
+        } else {
+          setCategories(catData);
+        }
+      }
 
       const { data: prodData } = await supabase
         .from('products')
