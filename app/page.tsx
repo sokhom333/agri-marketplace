@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Search, ShieldCheck, PlusCircle, MapPin, Shield, QrCode, X, Copy, Check, PackageCheck } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import ProductContactActions from './components/ProductContactActions';
-import PchumBenBanner from './components/PchumBenBanner';
 
 export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -55,9 +54,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-800 pb-20 sm:pb-12">
-      {/* ផ្ទាំងអបអរពិធីបុណ្យភ្ជុំបិណ្ឌបណ្ដោះអាសន្ន */}
-      <PchumBenBanner />
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-emerald-700 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-4">
@@ -180,7 +176,6 @@ export default function HomePage() {
                     key={p.id}
                     className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group"
                   >
-                    {/* រូបភាពកាត់សមាមាត្រការ៉េស្មើ */}
                     <Link href={`/products/${p.id}`} className="relative w-full aspect-square bg-slate-100 shrink-0 block overflow-hidden">
                       <img
                         src={p.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
@@ -192,7 +187,6 @@ export default function HomePage() {
                       </span>
                     </Link>
 
-                    {/* ព័ត៌មានផលិតផល */}
                     <div className="p-3 flex flex-col flex-1 justify-between gap-2.5">
                       <div>
                         <Link href={`/products/${p.id}`}>
@@ -214,7 +208,6 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* តម្លៃ និងប៊ូតុងទំនាក់ទំនង */}
                       <div className="pt-2 border-t border-slate-100 flex flex-col gap-1.5">
                         <div className="flex items-center justify-between">
                           <div>
@@ -234,7 +227,6 @@ export default function HomePage() {
                           </button>
                         </div>
 
-                        {/* ប៊ូតុង ខល (រើសខ្សែ) និង Telegram */}
                         <ProductContactActions sellerPhone={p.seller_phone} />
                       </div>
                     </div>
