@@ -3,7 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check, MessageSquare, Phone } from 'lucide-react';
+import { ArrowLeft, Send, MapPin, ShieldCheck, QrCode, X, Copy, Check, MessageSquare, Phone, Maximize2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 function ProductDetailContent() {
@@ -14,6 +14,7 @@ function ProductDetailContent() {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false); // State សម្រាប់មើលរូបពេញលេញ
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -107,16 +108,28 @@ function ProductDetailContent() {
 
       <main className="max-w-3xl mx-auto px-4 mt-6 space-y-6">
         <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm">
-          {/* កែប្រែទំហំរូបភាពត្រង់នេះ ទៅជា aspect-[4/3] (ទំហំ 3:4/4:3) */}
-          <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden">
+          
+          {/* ប្រអប់រូបភាពផលិតផល៖ អាចចុចពង្រីកបាន */}
+          <div
+            onClick={() => setShowImageModal(true)}
+            className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden cursor-pointer group"
+            title="ចុចដើម្បីមើលរូបភាពពេញលេញ"
+          >
             <img
               src={product.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
               alt={product.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
             />
-            <span className="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-bold px-3 py-1 rounded-lg backdrop-blur-sm">
+            
+            <span className="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-bold px-3 py-1 rounded-lg backdrop-blur-sm pointer-events-none">
               {product.category}
             </span>
+
+            {/* ប៊ូតុងតូចប្រាប់ថាអាចចុចពង្រីកបាន */}
+            <div className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-xl backdrop-blur-xs flex items-center gap-1.5 text-xs transition">
+              <Maximize2 size={14} />
+              <span className="text-[11px] font-medium hidden sm:inline">ចុចពង្រីករូប</span>
+            </div>
           </div>
 
           <div className="p-5 sm:p-6 space-y-4">
@@ -208,7 +221,31 @@ function ProductDetailContent() {
         </div>
       </main>
 
-      {/* Popup រើសខ្សែទូរស័ព្ទ */}
+      {/* --- ផ្ទាំងមើលរូបភាពពេញលេញ (Fullscreen Image Lightbox) --- */}
+      {showImageModal && (
+        <div
+          onClick={() => setShowImageModal(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200 cursor-zoom-out"
+        >
+          <button
+            type="button"
+            onClick={() => setShowImageModal(false)}
+            className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-white/20 hover:bg-white/40 text-white transition cursor-pointer"
+            title="បិទ"
+          >
+            <X size={24} />
+          </button>
+
+          <img
+            src={product.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
+            alt={product.title}
+            className="max-w-full max-h-[92vh] object-contain rounded-2xl shadow-2xl cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
+      {/* --- ផ្ទាំង Popup រើសខ្សែទូរស័ព្ទ --- */}
       {showCallModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-xs p-5 shadow-2xl space-y-3.5 animate-in fade-in zoom-in-95 duration-150">
@@ -259,7 +296,7 @@ function ProductDetailContent() {
         </div>
       )}
 
-      {/* Modal ស្កេន KHQR */}
+      {/* --- ផ្ទាំង Modal ស្កេន KHQR --- */}
       {showQR && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 relative shadow-2xl text-center">
