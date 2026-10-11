@@ -14,7 +14,7 @@ function ProductDetailContent() {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
-  const [showImageModal, setShowImageModal] = useState(false); // State សម្រាប់មើលរូបពេញលេញ
+  const [showImageModal, setShowImageModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -106,29 +106,31 @@ function ProductDetailContent() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 mt-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 mt-6 space-y-6">
         <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm">
           
-          {/* ប្រអប់រូបភាពផលិតផល៖ អាចចុចពង្រីកបាន */}
-          <div
-            onClick={() => setShowImageModal(true)}
-            className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden cursor-pointer group"
-            title="ចុចដើម្បីមើលរូបភាពពេញលេញ"
-          >
-            <img
-              src={product.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
-              alt={product.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-            />
-            
-            <span className="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-bold px-3 py-1 rounded-lg backdrop-blur-sm pointer-events-none">
-              {product.category}
-            </span>
+          {/* កំណត់ទំហំ 3:4 បញ្ឈរទម្រង់ទូរស័ព្ទ (aspect-[3/4]) */}
+          <div className="bg-slate-100 flex items-center justify-center border-b border-slate-100">
+            <div
+              onClick={() => setShowImageModal(true)}
+              className="relative w-full max-w-md aspect-[3/4] bg-slate-100 overflow-hidden cursor-pointer group"
+              title="ចុចដើម្បីមើលរូបភាពពេញលេញ"
+            >
+              <img
+                src={product.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
+                alt={product.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+              />
+              
+              <span className="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-bold px-3 py-1 rounded-lg backdrop-blur-sm pointer-events-none">
+                {product.category}
+              </span>
 
-            {/* ប៊ូតុងតូចប្រាប់ថាអាចចុចពង្រីកបាន */}
-            <div className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-xl backdrop-blur-xs flex items-center gap-1.5 text-xs transition">
-              <Maximize2 size={14} />
-              <span className="text-[11px] font-medium hidden sm:inline">ចុចពង្រីករូប</span>
+              {/* ប៊ូតុងតូចប្រាប់ថាអាចចុចពង្រីកបាន */}
+              <div className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-xl backdrop-blur-xs flex items-center gap-1.5 text-xs transition">
+                <Maximize2 size={14} />
+                <span className="text-[11px] font-medium hidden sm:inline">ចុចពង្រីករូប</span>
+              </div>
             </div>
           </div>
 
@@ -221,7 +223,7 @@ function ProductDetailContent() {
         </div>
       </main>
 
-      {/* --- ផ្ទាំងមើលរូបភាពពេញលេញ (Fullscreen Image Lightbox) --- */}
+      {/* ផ្ទាំងមើលរូបភាពពេញលេញ (Lightbox) */}
       {showImageModal && (
         <div
           onClick={() => setShowImageModal(false)}
@@ -245,7 +247,7 @@ function ProductDetailContent() {
         </div>
       )}
 
-      {/* --- ផ្ទាំង Popup រើសខ្សែទូរស័ព្ទ --- */}
+      {/* ផ្ទាំង Popup រើសខ្សែទូរស័ព្ទ */}
       {showCallModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-xs p-5 shadow-2xl space-y-3.5 animate-in fade-in zoom-in-95 duration-150">
@@ -296,7 +298,7 @@ function ProductDetailContent() {
         </div>
       )}
 
-      {/* --- ផ្ទាំង Modal ស្កេន KHQR --- */}
+      {/* ផ្ទាំង Modal ស្កេន KHQR */}
       {showQR && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 relative shadow-2xl text-center">
