@@ -107,7 +107,8 @@ function ProductDetailContent() {
 
       <main className="max-w-3xl mx-auto px-4 mt-6 space-y-6">
         <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm">
-          <div className="relative w-full aspect-video sm:aspect-[16/9] bg-slate-100">
+          {/* កែប្រែទំហំរូបភាពត្រង់នេះ ទៅជា aspect-[4/3] (ទំហំ 3:4/4:3) */}
+          <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden">
             <img
               src={product.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'}
               alt={product.title}
@@ -156,7 +157,6 @@ function ProductDetailContent() {
 
             {/* ប៊ូតុងសកម្មភាព និងទំនាក់ទំនង */}
             <div className="space-y-2.5 pt-2">
-              {/* ១. ប៊ូតុងឆាតផ្ទាល់ក្នុងវេបសាយ */}
               <button
                 type="button"
                 onClick={handleStartChat}
@@ -166,7 +166,6 @@ function ProductDetailContent() {
                 <span>ឆាតផ្ទាល់ក្នុងវេបសាយ</span>
               </button>
 
-              {/* ២. ប៊ូតុងខល និង Telegram រៀបជា ២ ជួរឈរទន្ទឹមគ្នាស្មើស្អាត */}
               <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
@@ -194,15 +193,16 @@ function ProductDetailContent() {
                 </a>
               </div>
 
-              {/* ៣. ប៊ូតុងស្កេនទូទាត់ KHQR */}
-              <button
-                type="button"
-                onClick={() => setShowQR(true)}
-                className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-2.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer"
-              >
-                <QrCode size={16} />
-                <span>ស្កេនទូទាត់ប្រាក់ (KHQR)</span>
-              </button>
+              {product.qr_code_url && (
+                <button
+                  type="button"
+                  onClick={() => setShowQR(true)}
+                  className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-2.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <QrCode size={16} />
+                  <span>ស្កេនទូទាត់ប្រាក់ (KHQR)</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
