@@ -1,12 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "app.vercel.daemkasikorm.twa",
-      "sha256_cert_fingerprints": [
-        "14:6D:E9:..."
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.daemkasikorm.twa",
+        "sha256_cert_fingerprints": ["53:B4:31:67:D4:FA:48:7D:E6:E9:BD:70:8F:E0:BA:89:D0:A8:FE:8C:B5:99:94:D6:A9:A0:A2:4A:27:4C:DA:32"]
+      }
+    }]
