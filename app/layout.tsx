@@ -24,9 +24,15 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "ផ្សារដើមកសិកម្ម",
   description: "ផ្គត់ផ្គង់ថ្នាំសត្វ ចំណីសត្វ និងកសិផលធម្មជាតិ ផ្ទាល់ពីកសិករ និងដេប៉ូ",
+  manifest: "/manifest.json", // ភ្ជាប់ Web App Manifest សម្រាប់ PWA
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ដើមកសិកម្ម",
   },
 };
 
