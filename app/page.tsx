@@ -61,19 +61,25 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-800 pb-20 sm:pb-12">
+    // បង្កើន pb-28 ដើម្បីកុំឱ្យរបារបាតក្រោមបាំងទំនិញ
+    <div className="min-h-screen bg-slate-100/70 text-slate-800 pb-28 sm:pb-14">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-emerald-700 text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-40 bg-emerald-700 text-white shadow-md">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Logo & ឈ្មោះវេបសាយ (កំណត់មិនឱ្យធ្លាក់ជួរលើទូរស័ព្ទ) */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <img 
               src="/logo.png" 
               alt="Logo ផ្សារដើមកសិកម្ម" 
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shadow-sm border border-emerald-400/50 bg-white"
+              className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover shadow-sm border border-emerald-400/50 bg-white shrink-0"
             />
             <div>
-              <h1 className="text-base sm:text-xl font-bold leading-tight">ផ្សារដើមកសិកម្ម</h1>
-              <p className="text-[10px] sm:text-xs text-emerald-100 hidden sm:block">ផ្គត់ផ្គង់ថ្នាំសត្វ ចំណីសត្វ និងកសិផលធម្មជាតិ</p>
+              <h1 className="text-sm sm:text-lg font-bold leading-tight whitespace-nowrap">
+                ផ្សារដើមកសិកម្ម
+              </h1>
+              <p className="text-[10px] sm:text-xs text-emerald-100 hidden sm:block">
+                ផ្គត់ផ្គង់ថ្នាំសត្វ ចំណីសត្វ និងកសិផលធម្មជាតិ
+              </p>
             </div>
           </div>
 
@@ -89,10 +95,11 @@ export default function HomePage() {
             <Search className="absolute left-3 top-2.5 text-slate-400" size={15} />
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* ប៊ូតុង Action ផ្នែកខាងលើ */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <Link
               href="/admin"
-              className="text-xs text-emerald-100 hover:text-white p-2 flex items-center gap-1 transition"
+              className="text-xs text-emerald-100 hover:text-white p-1.5 sm:p-2 flex items-center gap-1 transition"
               title="Admin Panel"
             >
               <Shield size={16} />
@@ -101,7 +108,7 @@ export default function HomePage() {
 
             <Link
               href="/my-products"
-              className="text-xs text-emerald-100 hover:text-white px-3 py-1.5 rounded-lg border border-emerald-600/60 hover:border-emerald-400 hover:bg-emerald-800/40 transition flex items-center gap-1"
+              className="text-xs text-emerald-100 hover:text-white px-2.5 py-1.5 rounded-lg border border-emerald-600/60 hover:border-emerald-400 hover:bg-emerald-800/40 transition flex items-center gap-1"
             >
               <PackageCheck size={14} />
               <span className="hidden sm:inline">ទំនិញខ្ញុំ</span>
@@ -109,7 +116,7 @@ export default function HomePage() {
 
             <Link
               href="/sell"
-              className="flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-900 px-3 py-1.5 rounded-lg text-xs font-semibold text-white border border-emerald-600 transition shadow-sm"
+              className="flex items-center gap-1 bg-emerald-800 hover:bg-emerald-900 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-white border border-emerald-600 transition shadow-sm"
             >
               <PlusCircle size={15} />
               <span>ដាក់លក់</span>
@@ -118,7 +125,7 @@ export default function HomePage() {
         </div>
 
         {/* Search Bar នៅលើទូរស័ព្ទដៃ */}
-        <div className="md:hidden max-w-7xl mx-auto px-4 pb-2.5">
+        <div className="md:hidden max-w-7xl mx-auto px-3 pb-2.5">
           <div className="relative">
             <input
               type="text"
