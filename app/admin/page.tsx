@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, EyeOff, Trash2, MapPin, RefreshCw, Lock, KeyRound, Plus, X, UploadCloud, ImagePlus, QrCode, Pencil } from 'lucide-react';
+import { ArrowLeft, CheckCircle, EyeOff, Trash2, RefreshCw, Lock, KeyRound, Plus, X, UploadCloud, ImagePlus, QrCode, Pencil, Clock, Check, XCircle, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const ADMIN_SECRET_PIN = '271993'; 
@@ -18,10 +18,14 @@ export default function AdminPage() {
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
 
+  // State សម្រាប់បញ្ជីទំនិញ
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  // State ថ្មីសម្រាប់ទំនិញរង់ចាំ Approve
+  const [pendingProducts, setPendingProducts] = useState<any[]>([]);
+  const [loadingApprovals, setLoadingApprovals] = useState(false);
 
-  // State សម្រាប់គ្រប់គ្រងទម្រង់ផុសទំនិញថ្មី (Add Modal)
   const [showAddModal, setShowAddModal] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -44,7 +48,7 @@ export default function AdminPage() {
     const savedAuth = sessionStorage.getItem('admin_authenticated');
     if (savedAuth === 'true') {
       setIsAuthenticated(true);
-      fetchProducts();
+      fetchAllData();
     }
   }, []);
 
@@ -54,7 +58,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       sessionStorage.setItem('admin_authenticated', 'true');
       setPinError(false);
-      fetchProducts();
+      fetchAllData();
     } else {
       setPinError(true);
       setPinInput('');
@@ -67,18 +71,69 @@ export default function AdminPage() {
     setPinInput('');
   };
 
+  const fetchAllData = () => {
+    fetchProducts();
+    fetchPendingProducts();
+  };
+
+  // ទាញយកផលិតផលទាំងអស់ដែលបាន Approve រួច ឬជារបស់ Admin
   const fetchProducts = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('products')
       .select('*')
+      .neq('status', 'pending') // មិនយក pending មកបង្ហាញក្នុងតារាងធំទេ
       .order('created_at', { ascending: false });
     if (data) setProducts(data);
     if (error) console.error(error);
     setLoading(false);
   };
 
-  const toggleApprove = async (id: string, currentStatus: boolean) => {
+  // ទាញយកតែផលិតផលកសិករដែលទើបបង្ហោះ (status: 'pending')
+  const fetchPendingProducts = async () => {
+    setLoadingApprovals(true);
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+    if (data) setPendingProducts(data);
+    if (error) console.error(error);
+    setLoadingApprovals(false);
+  };
+
+  // អនុម័តផលិតផល (Approve)
+  const handleApprove = async (id: string) => {
+    const { error } = await supabase
+      .from('products')
+      .update({ status: 'approved', is_approved: true })
+      .eq('id', id);
+
+    if (error) {
+      alert('មានបញ្ហាក្នុងការ Approve៖ ' + error.message);
+    } else {
+      setPendingProducts((prev) => prev.filter((p) => p.id !== id));
+      fetchProducts(); // ទាញទិន្នន័យតារាងធំម្តងទៀត
+      alert('✅ បានអនុម័តទំនិញចូលផ្សារដោយជោគជ័យ!');
+    }
+  };
+
+  // បដិសេធផលិតផល (Reject)
+  const handleReject = async (id: string) => {
+    if (!confirm('តើអ្នកពិតជាចង់បដិសេធ និងលុបផលិតផលនេះចេញមែនទេ?')) return;
+    const { error } = await supabase
+      .from('products')
+      .delete() // លុបចោលតែម្តងសម្រាប់ផលិតផលបដិសេធ ឬអាចប្រើ update status: 'rejected'
+      .eq('id', id);
+
+    if (error) {
+      alert('មានបញ្ហា៖ ' + error.message);
+    } else {
+      setPendingProducts((prev) => prev.filter((p) => p.id !== id));
+    }
+  };
+
+  const toggleApproveDisplay = async (id: string, currentStatus: boolean) => {
     const { error } = await supabase.from('products').update({ is_approved: !currentStatus }).eq('id', id);
     if (error) alert('មានបញ្ហា៖ ' + error.message);
     else setProducts(products.map((p) => (p.id === id ? { ...p, is_approved: !currentStatus } : p)));
@@ -157,6 +212,7 @@ export default function AdminPage() {
           qr_code_url: finalQrUrl || null,
           description: formData.description,
           is_approved: true,
+          status: 'approved', // Admin បង្ហោះគឺ approved ស្វ័យប្រវត្តិ
           edit_pin: 'admin',
         },
       ]);
@@ -225,8 +281,8 @@ export default function AdminPage() {
               <Plus size={16} />
               <span className="hidden sm:inline">បន្ថែមទំនិញដេប៉ូ</span>
             </button>
-            <button onClick={fetchProducts} className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 transition">
-              <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+            <button onClick={fetchAllData} className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 transition">
+              <RefreshCw size={14} className={loading || loadingApprovals ? 'animate-spin' : ''} />
               <span className="hidden sm:inline">ទាញទិន្នន័យ</span>
             </button>
             <button onClick={handleLogout} className="bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-medium transition">Lock</button>
@@ -234,10 +290,60 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 mt-6">
+      <main className="max-w-6xl mx-auto px-4 mt-6 space-y-6">
+        
+        {/* ផ្នែកទី ១៖ បញ្ជីរង់ចាំការអនុម័ត (Pending Approvals) */}
+        <div className="bg-white rounded-2xl border border-amber-200 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-amber-50/50">
+            <div className="flex items-center gap-2">
+              <Clock className="text-amber-500" size={20} />
+              <h2 className="text-sm font-bold text-slate-800">
+                សំណើសុំដាក់លក់របស់កសិករ
+              </h2>
+            </div>
+            <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded-full">
+              រង់ចាំពិនិត្យ៖ {pendingProducts.length}
+            </span>
+          </div>
+
+          {loadingApprovals ? (
+            <p className="text-xs text-slate-500 py-8 text-center">កំពុងទាញយកទិន្នន័យ...</p>
+          ) : pendingProducts.length === 0 ? (
+            <div className="text-center py-8">
+              <CheckCircle2 className="mx-auto text-emerald-500 mb-2" size={32} />
+              <p className="text-xs font-medium text-slate-600">គ្មានផលិតផលរង់ចាំការអនុម័តទេ!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+              {pendingProducts.map((item) => (
+                <div key={item.id} className="border border-slate-200 rounded-xl p-3 flex flex-col justify-between hover:border-emerald-300 transition-colors bg-white">
+                  <div className="flex gap-3">
+                    <img src={item.image_url || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500'} alt={item.title} className="w-16 h-16 rounded-lg object-cover border border-slate-100 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[9px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">{item.category}</span>
+                      <h3 className="font-bold text-slate-800 text-xs mt-1 truncate">{item.title}</h3>
+                      <p className="text-emerald-600 font-bold text-xs mt-0.5">{(item.price * 4000).toLocaleString()} រៀល</p>
+                      <p className="text-[10px] text-slate-500 mt-1 truncate">👤 {item.seller_name} ({item.seller_phone})</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                    <button onClick={() => handleReject(item.id)} className="px-3 py-1.5 text-[11px] font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors flex items-center gap-1">
+                      <XCircle size={12} /> បដិសេធ
+                    </button>
+                    <button onClick={() => handleApprove(item.id)} className="px-4 py-1.5 text-[11px] font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors flex items-center gap-1">
+                      <Check size={12} /> អនុម័ត (Approve)
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ផ្នែកទី ២៖ បញ្ជីផលិតផលទាំងអស់ (Approved Products) */}
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex justify-between items-center">
-            <h2 className="text-sm font-bold text-slate-800">បញ្ជីផលិតផលទាំងអស់ ({products.length})</h2>
+            <h2 className="text-sm font-bold text-slate-800">បញ្ជីផលិតផលលើផ្សារ ({products.length})</h2>
           </div>
           {loading ? (
             <div className="text-center py-12 text-slate-400 text-xs">កំពុងផ្ទុកទិន្នន័យ...</div>
@@ -279,15 +385,10 @@ export default function AdminPage() {
                         </td>
                         <td className="py-3 px-4 text-center">
                           <div className="flex items-center justify-center gap-1.5">
-                            {/* ប៊ូតុង កែប្រែ ព័ត៌មាន និង QR Code */}
-                            <Link
-                              href={`/my-products/edit/${p.id}`}
-                              className="p-1.5 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-700 transition"
-                              title="កែសម្រួលព័ត៌មាន និង QR Code"
-                            >
+                            <Link href={`/my-products/edit/${p.id}`} className="p-1.5 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-700 transition" title="កែសម្រួល">
                               <Pencil size={14} />
                             </Link>
-                            <button onClick={() => toggleApprove(p.id, p.is_approved)} className={`p-1.5 rounded-lg border transition ${p.is_approved ? 'border-amber-200 text-amber-600 hover:bg-amber-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`} title={p.is_approved ? 'លាក់ពីទំព័រដើម' : 'អនុម័តឱ្យបង្ហាញ'}>{p.is_approved ? <EyeOff size={14} /> : <CheckCircle size={14} />}</button>
+                            <button onClick={() => toggleApproveDisplay(p.id, p.is_approved)} className={`p-1.5 rounded-lg border transition ${p.is_approved ? 'border-amber-200 text-amber-600 hover:bg-amber-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`} title={p.is_approved ? 'លាក់ពីទំព័រដើម' : 'បើកឱ្យបង្ហាញ'}>{p.is_approved ? <EyeOff size={14} /> : <CheckCircle size={14} />}</button>
                             <button onClick={() => deleteProduct(p.id)} className="p-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition" title="លុបទំនិញនេះចោល"><Trash2 size={14} /></button>
                           </div>
                         </td>
@@ -312,7 +413,6 @@ export default function AdminPage() {
             
             <form onSubmit={handleAdminSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {/* Product Image */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-2">រូបផលិតផល *</label>
                   <label htmlFor="admin-product-image" className="flex flex-col items-center justify-center w-full h-32 border-2 border-emerald-300 border-dashed rounded-xl cursor-pointer bg-emerald-50 hover:bg-emerald-100 transition relative overflow-hidden">
@@ -320,7 +420,6 @@ export default function AdminPage() {
                     <input id="admin-product-image" type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
                   </label>
                 </div>
-                {/* QR Image */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-2">រូប QR Code</label>
                   <label htmlFor="admin-qr-image" className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition relative overflow-hidden">
@@ -339,13 +438,12 @@ export default function AdminPage() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ប្រភេទ *</label>
                   <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600 bg-white">
-  <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
-  <option value="ចំណីសត្វ">ចំណីសត្វ</option>
-  <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
-  <option value="កសិផលស្រស់">កសិផលស្រស់</option>
-  {/* ថែមប្រភេទថ្មីនៅទីនេះ */}
-  <option value="សម្ភារៈកសិកម្ម">សម្ភារៈកសិកម្ម</option>
-</select>
+                    <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
+                    <option value="ចំណីសត្វ">ចំណីសត្វ</option>
+                    <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
+                    <option value="កសិផលស្រស់">កសិផលស្រស់</option>
+                    <option value="សម្ភារៈកសិកម្ម">សម្ភារៈកសិកម្ម</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ទីតាំង *</label>
