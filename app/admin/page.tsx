@@ -71,34 +71,29 @@ export default function AdminPage() {
     setPinInput('');
   };
 
-  const fetchAllData = () => {
-    fetchProducts();
-    fetchPendingProducts();
-  };
-
-  // ទាញយកផលិតផលទាំងអស់ដែលបាន Approve រួច ឬជារបស់ Admin
-  const fetchProducts = async () => {
+  // ទាញយកទិន្នន័យផលិតផលទាំងអស់មកបំបែកជា ២ ក្រុម
+  const fetchAllData = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .neq('status', 'pending') // មិនយក pending មកបង្ហាញក្នុងតារាងធំទេ
-      .order('created_at', { ascending: false });
-    if (data) setProducts(data);
-    if (error) console.error(error);
-    setLoading(false);
-  };
-
-  // ទាញយកតែផលិតផលកសិករដែលទើបបង្ហោះ (status: 'pending')
-  const fetchPendingProducts = async () => {
     setLoadingApprovals(true);
+
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .eq('status', 'pending')
       .order('created_at', { ascending: false });
-    if (data) setPendingProducts(data);
-    if (error) console.error(error);
+
+    if (error) {
+      console.error('Error fetching data:', error);
+    } else if (data) {
+      // ផលិតផលដែលបាន Approve ហើយ (ឬរបស់ Admin ដែលមិនមានបញ្ហា) ចូលតារាងធំ
+      const approved = data.filter((p) => p.is_approved === true);
+      setProducts(approved);
+
+      // ផលិតផលដែលកសិករទើបតែផុស (is_approved ស្មើ false ឬ null) ចូលប្រអប់សំណើ
+      const pending = data.filter((p) => p.is_approved === false || p.is_approved === null);
+      setPendingProducts(pending);
+    }
+
+    setLoading(false);
     setLoadingApprovals(false);
   };
 
@@ -106,14 +101,13 @@ export default function AdminPage() {
   const handleApprove = async (id: string) => {
     const { error } = await supabase
       .from('products')
-      .update({ status: 'approved', is_approved: true })
+      .update({ is_approved: true })
       .eq('id', id);
 
     if (error) {
       alert('មានបញ្ហាក្នុងការ Approve៖ ' + error.message);
     } else {
-      setPendingProducts((prev) => prev.filter((p) => p.id !== id));
-      fetchProducts(); // ទាញទិន្នន័យតារាងធំម្តងទៀត
+      fetchAllData(); // Update ទិន្នន័យទាំងសងខាង
       alert('✅ បានអនុម័តទំនិញចូលផ្សារដោយជោគជ័យ!');
     }
   };
@@ -123,27 +117,30 @@ export default function AdminPage() {
     if (!confirm('តើអ្នកពិតជាចង់បដិសេធ និងលុបផលិតផលនេះចេញមែនទេ?')) return;
     const { error } = await supabase
       .from('products')
-      .delete() // លុបចោលតែម្តងសម្រាប់ផលិតផលបដិសេធ ឬអាចប្រើ update status: 'rejected'
+      .delete()
       .eq('id', id);
 
     if (error) {
       alert('មានបញ្ហា៖ ' + error.message);
     } else {
-      setPendingProducts((prev) => prev.filter((p) => p.id !== id));
+      fetchAllData();
     }
   };
 
   const toggleApproveDisplay = async (id: string, currentStatus: boolean) => {
     const { error } = await supabase.from('products').update({ is_approved: !currentStatus }).eq('id', id);
-    if (error) alert('មានបញ្ហា៖ ' + error.message);
-    else setProducts(products.map((p) => (p.id === id ? { ...p, is_approved: !currentStatus } : p)));
+    if (error) {
+      alert('មានបញ្ហា៖ ' + error.message);
+    } else {
+      fetchAllData();
+    }
   };
 
   const deleteProduct = async (id: string) => {
     if (!confirm('តើអ្នកពិតជាចង់លុបទំនិញនេះចោលមែនទេ?')) return;
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) alert('មិនអាចលុបបានទេ៖ ' + error.message);
-    else setProducts(products.filter((p) => p.id !== id));
+    else fetchAllData();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -211,8 +208,7 @@ export default function AdminPage() {
           image_url: finalImageUrl,
           qr_code_url: finalQrUrl || null,
           description: formData.description,
-          is_approved: true,
-          status: 'approved', // Admin បង្ហោះគឺ approved ស្វ័យប្រវត្តិ
+          is_approved: true, // Admin បង្ហោះគឺ approved ស្វ័យប្រវត្តិ
           edit_pin: 'admin',
         },
       ]);
@@ -222,7 +218,7 @@ export default function AdminPage() {
       } else {
         alert('បង្ហោះទំនិញដេប៉ូជោគជ័យ!');
         setShowAddModal(false);
-        fetchProducts();
+        fetchAllData();
         
         setFormData({ ...formData, title: '', price: '', description: '' });
         setImageFile(null); setImagePreview('');
