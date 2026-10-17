@@ -113,7 +113,7 @@ export default function SellPage() {
           qr_code_url: finalQrUrl || null,
           description: formData.description,
           edit_pin: formData.edit_pin || '1234',
-          is_approved: true,
+          is_approved: false, // កែត្រង់នេះ៖ ផលិតផលកសិករផុសត្រូវទាមទារការពិនិត្យពី Admin សិន
         },
       ]);
 
@@ -160,8 +160,8 @@ export default function SellPage() {
           {success ? (
             <div className="text-center py-10 space-y-3">
               <CheckCircle2 className="mx-auto text-emerald-600" size={56} />
-              <h2 className="text-lg font-bold text-slate-800">បានចុះបញ្ជីផលិតផលដោយជោគជ័យ!</h2>
-              <p className="text-xs text-slate-500">កំពុងនាំអ្នកត្រឡប់ទៅទំព័រដើម...</p>
+              <h2 className="text-lg font-bold text-slate-800">បានបញ្ជូនសំណើដាក់លក់ដោយជោគជ័យ!</h2>
+              <p className="text-xs text-slate-500">ផលិតផលរបស់អ្នកកំពុងរង់ចាំការត្រួតពិនិត្យ និងអនុម័តពីប្រព័ន្ធ...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -217,13 +217,12 @@ export default function SellPage() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">ប្រភេទ *</label>
                   <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600 bg-white">
-  <option value="កសិផលស្រស់">កសិផលស្រស់</option>
-  <option value="ចំណីសត្វ">ចំណីសត្វ</option>
-  <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
-  <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
-  {/* ថែមប្រភេទថ្មីនៅទីនេះ */}
-  <option value="សម្ភារៈកសិកម្ម">សម្ភារៈកសិកម្ម</option>
-</select>
+                    <option value="កសិផលស្រស់">កសិផលស្រស់</option>
+                    <option value="ចំណីសត្វ">ចំណីសត្វ</option>
+                    <option value="ថ្នាំសត្វ & វ៉ាក់សាំង">ថ្នាំសត្វ & វ៉ាក់សាំង</option>
+                    <option value="ពូជសត្វ & ពូជដំណាំ">ពូជសត្វ & ពូជដំណាំ</option>
+                    <option value="សម្ភារៈកសិកម្ម">សម្ភារៈកសិកម្ម</option>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -244,7 +243,6 @@ export default function SellPage() {
                   <input type="text" name="seller_name" required placeholder="ឧ. កសិដ្ឋាន ពូ ហេង" value={formData.seller_name} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600" />
                 </div>
 
-                {/* ប្រអប់បញ្ចូលលេខទូរស័ព្ទរហូតដល់ ៣ ខ្សែ */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     លេខទូរស័ព្ទទំនាក់ទំនង (អាចដាក់បានរហូតដល់ ៣ ខ្សែ) *
@@ -280,7 +278,6 @@ export default function SellPage() {
                 <textarea name="description" rows={3} placeholder="រៀបរាប់ពីប្រភព គុណភាព ទីតាំងចម្ការ លក្ខខណ្ឌដឹកជញ្ជូន..." value={formData.description} onChange={handleChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-emerald-600" />
               </div>
               
-              {/* ប្រអប់បញ្ចូលលេខកូដសម្ងាត់ */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   លេខកូដសម្ងាត់សម្រាប់គ្រប់គ្រង/លុបទំនិញ (PIN ៤ ខ្ទង់) *
@@ -302,7 +299,7 @@ export default function SellPage() {
 
               <button type="submit" disabled={loading} className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50">
                 <UploadCloud size={18} />
-                <span>{loading ? 'កំពុងបង្ហោះចូលប្រព័ន្ធ...' : 'បង្ហោះដាក់លក់ឥឡូវនេះ'}</span>
+                <span>{loading ? 'កំពុងបញ្ជូនសំណើ...' : 'បញ្ជូនសំណើដាក់លក់'}</span>
               </button>
             </form>
           )}
